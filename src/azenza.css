@@ -1604,3 +1604,81 @@ body:has(.app) {
 
 .ui-loading span:nth-child(2) { animation-delay: .15s; }
 .ui-loading span:nth-child(3) { animation-delay: .3s; }
+
+/*──────IMPRIMIR (Tu negocio en PDF)────────────────────────────*/
+
+.ui-print {
+    background: var(--ui-surface);
+}
+
+.ui-print__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px var(--ui-gutter);
+    border-bottom: 1px solid var(--ui-divider);
+}
+
+.ui-print__doc {
+    padding: 28px var(--ui-gutter) 48px;
+    line-height: 1.45;
+}
+
+.ui-print__head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 12px;
+}
+
+.ui-print__title {
+    margin-top: 14px;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.ui-print__meta {
+    color: var(--ui-text-muted);
+    font-size: 13px;
+}
+
+.ui-print__section {
+    padding: 16px 0;
+    border-top: 1px solid var(--ui-divider);
+    break-inside: avoid;
+}
+
+.ui-print__name {
+    margin-bottom: 8px;
+    color: var(--ui-teal);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ui-print__row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+    font-size: 14.5px;
+}
+
+.ui-print__row b {
+    font-weight: 700;
+}
+
+@media print {
+    @page { margin: 18mm 16mm; }
+
+    body:has(.app) { background: #FFFFFF; }
+
+    .app {
+        max-width: none;
+        min-height: 0;
+        background: #FFFFFF;
+    }
+
+    .ui-print__bar { display: none; }
+    .ui-print__doc { padding: 0; }
+}
