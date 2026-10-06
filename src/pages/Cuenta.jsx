@@ -17,13 +17,15 @@ export function Cuenta() {
     const [password, setPassword] = useState("");
     const [enviando, setEnviando] = useState(false);
     const [error, setError] = useState("");
+    // Al salir o borrar la cuenta, la sesión se cierra antes de navegar: así va al inicio y no al login.
+    const [saliendo, setSaliendo] = useState(false);
 
     if (cargando) return <Loader />;
-    if (!user) return <Navigate to="/login" replace state={{ from: "/cuenta" }} />;
+    if (!user) return saliendo ? <Navigate to="/" replace /> : <Navigate to="/login" replace state={{ from: "/cuenta" }} />;
 
     const salir = async () => {
+        setSaliendo(true);
         await logout();
-        navigate("/", { replace: true });
         avisar("Cerraste sesión. Lo tuyo queda guardado en tu cuenta.");
     };
 
@@ -38,12 +40,13 @@ export function Cuenta() {
         setError("");
 
         try {
+            setSaliendo(true);
             await borrarCuenta(password);
-            navigate("/", { replace: true });
             avisar("Borramos tu cuenta y todo lo que tenía.");
         } catch (err) {
             setError(err.message);
             setEnviando(false);
+            setSaliendo(false);
         }
     };
 

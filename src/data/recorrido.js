@@ -7,9 +7,9 @@
 //   revisa contra criterios. La calculadora de precios igual pide los números.
 // El usuario siempre puede pasar de A a B y volver: el nivel no encierra.
 
-import { MODULOS, calcularPrecio } from "./modulos";
-import { textoPrincipal } from "./puntoDePartida";
-import { capitalizar, esGenerico, pesos, sinPuntoFinal } from "../utils/texto";
+import { MODULOS, calcularPrecio } from "./modulos.js";
+import { textoPrincipal } from "./puntoDePartida.js";
+import { capitalizar, esGenerico, pesos, sinPuntoFinal } from "../utils/texto.js";
 
 export const NOMBRE_PROFUNDIDAD = {
     A: "Recorrido completo",

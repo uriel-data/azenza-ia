@@ -1,6 +1,7 @@
 // Respuestas y lectura de pedidos. La API solo habla JSON y nunca se cachea.
 
-const MAX_CUERPO = 64 * 1024;
+// Alcanza para el módulo más largo; importar lo de un invitado (15 módulos) pide más.
+const MAX_CUERPO = 128 * 1024;
 
 /** Un error que se le puede mostrar al usuario tal cual, con su status HTTP. */
 export class ErrorHttp extends Error {
@@ -25,15 +26,15 @@ export const json = (status, datos, cabeceras = {}) =>
 export const DATOS_INVALIDOS = "Lo que llegó no tiene la forma esperada. Recargá la página e intentá de nuevo.";
 
 /** El cuerpo del pedido como objeto JSON. Rechaza otros tipos de contenido y cuerpos grandes. */
-export async function leerJson(req) {
+export async function leerJson(req, { maximo = MAX_CUERPO } = {}) {
     const tipo = req.headers.get("content-type") ?? "";
     if (!tipo.toLowerCase().startsWith("application/json")) throw new ErrorHttp(415, DATOS_INVALIDOS);
 
     const largo = Number(req.headers.get("content-length") ?? 0);
-    if (largo > MAX_CUERPO) throw new ErrorHttp(413, "Lo que mandaste es demasiado largo.");
+    if (largo > maximo) throw new ErrorHttp(413, "Lo que mandaste es demasiado largo.");
 
     const texto = await req.text();
-    if (texto.length > MAX_CUERPO) throw new ErrorHttp(413, "Lo que mandaste es demasiado largo.");
+    if (texto.length > maximo) throw new ErrorHttp(413, "Lo que mandaste es demasiado largo.");
 
     let datos;
     try {

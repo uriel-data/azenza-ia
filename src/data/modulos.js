@@ -21,8 +21,8 @@
 // - armarFilas(valores): la tarjeta que queda en Tu negocio.
 // - siguiente: el módulo que sigue naturalmente y por qué.
 
-import { textoPrincipal, entradasConTexto } from "./puntoDePartida";
-import { capitalizar, decimal, enMinuscula, entero, pesos, sinPuntoFinal } from "../utils/texto";
+import { textoPrincipal, entradasConTexto } from "./puntoDePartida.js";
+import { capitalizar, decimal, enMinuscula, entero, pesos, sinPuntoFinal } from "../utils/texto.js";
 
 // Para revisar los módulos que no tienen criterios propios (igual que en el backend).
 export const CRITERIOS_GENERICOS = [

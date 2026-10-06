@@ -6,7 +6,7 @@
 // principal es el índice dentro de las entradas con texto, o -1 si eligió
 // "Todavía no sabría cuál elegir".
 
-import { MODULO, MODULOS } from "./modulos";
+import { MODULO, MODULOS } from "./modulos.js";
 
 export const respuestaVacia = () => ({ opcion: null, entradas: [""], principal: 0 });
 
