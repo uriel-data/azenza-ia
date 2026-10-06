@@ -4,6 +4,7 @@ import { ErrorHttp, json, verificarOrigen } from "./http.js";
 import { exigirUsuario } from "./sesion.js";
 import * as cuenta from "./rutas/cuenta.js";
 import * as datos from "./rutas/datos.js";
+import * as consultor from "./rutas/consultor.js";
 
 // [método, patrón, manejador, { conCuenta }]. Los grupos del patrón llegan en params.
 // El manejador recibe (req, { params, ip, usuario }) y devuelve un Response.
@@ -23,6 +24,10 @@ const RUTAS = [
     ["PUT", /^\/api\/modulos\/([a-z]+)$/, datos.guardarModulo, { conCuenta: true }],
     ["PUT", /^\/api\/modulos\/([a-z]+)\/pausa$/, datos.pausarModulo, { conCuenta: true }],
     ["POST", /^\/api\/importar$/, datos.importar, { conCuenta: true }],
+
+    ["GET", /^\/api\/consultor\/uso$/, consultor.uso, { conCuenta: true }],
+    ["POST", /^\/api\/consultor\/revision$/, consultor.revision, { conCuenta: true }],
+    ["POST", /^\/api\/consultor\/pregunta$/, consultor.pregunta, { conCuenta: true }],
 ];
 
 const MUTAN = new Set(["POST", "PUT", "PATCH", "DELETE"]);

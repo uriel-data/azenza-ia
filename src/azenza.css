@@ -1718,3 +1718,12 @@ body:has(.app) {
 
 .ui-btn--danger { background: var(--ui-error); }
 .ui-btn--danger:hover:not(:disabled) { background: #7C2D12; }
+
+/* Aviso de privacidad del Consultor IA (qué se le manda a Gemini). */
+.ui-privacidad-ia {
+    padding: 12px 14px;
+    border: 1px solid var(--ui-divider);
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+}

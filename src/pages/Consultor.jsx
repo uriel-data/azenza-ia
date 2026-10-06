@@ -15,11 +15,12 @@ const SUGERENCIAS = [
 ];
 
 const MAX_PREGUNTA = 500;
+const POLITICA = "https://azenza.com.ar/privacidad/#azenza-ia";
 
 /**
  * Consultor IA. Con ?modulo=id revisa lo que construyó en ese módulo; sin él, responde
- * una pregunta libre sobre Tu negocio. Lo responde el backend con OpenAI, con un límite
- * diario por usuario. Nunca pone notas ni reescribe por el usuario.
+ * una pregunta libre sobre Tu negocio. Lo responde el servidor con Gemini, con un límite
+ * diario por usuario (y uno global). Nunca pone notas ni reescribe por el usuario.
  */
 export function Consultor() {
     const { user, cargando } = useAuth();
@@ -72,8 +73,8 @@ function PantallaConsultor({ modulo, esInvitado, construidos }) {
             setEstado("listo");
         } catch (err) {
             if (err.status === 429) {
-                // Se quedó sin cupo entre que abrió la pantalla y pidió la consulta.
-                setUso((anterior) => (anterior ? { ...anterior, quedan: 0 } : anterior));
+                // Se quedó sin cupo (suyo o el del día) entre que abrió la pantalla y pidió la consulta.
+                setUso((anterior) => err.data?.uso ?? (anterior ? { ...anterior, quedan: 0 } : anterior));
                 setEstado("idle");
                 return;
             }
@@ -202,12 +203,21 @@ function PantallaConsultor({ modulo, esInvitado, construidos }) {
 
                 {!esInvitado && !apagado && estado === "idle" && (
                     <>
-                        {quedanTexto && <span className="ui-small" style={{ padding: "0 4px", fontSize: 13.5 }}>{quedanTexto}</span>}
+                        {quedanTexto && !uso.agotadoGlobal && <span className="ui-small" style={{ padding: "0 4px", fontSize: 13.5 }}>{quedanTexto}</span>}
                         {sinCupo && (
                             <div className="ui-card" style={{ background: "var(--ui-subtle)", borderRadius: 16, padding: "14px 16px", fontSize: 15, lineHeight: 1.45 }}>
-                                Ya usaste las de hoy. Mañana tenés más; mientras, tus módulos funcionan igual.
+                                {uso.agotadoGlobal
+                                    ? "El Consultor ya respondió todas las consultas que puede por hoy. Mañana vuelve; mientras, todo lo demás funciona igual."
+                                    : "Ya usaste las de hoy. Mañana tenés más; mientras, tus módulos funcionan igual."}
                             </div>
                         )}
+                        <p className="ui-note ui-privacidad-ia">
+                            Para responder, Azenza le manda a Gemini (la IA de Google) solo lo que escribiste en tus
+                            módulos{esRevision ? "" : " y tu pregunta"}: nunca tu nombre ni tu email. Como usamos el plan
+                            gratuito, Google puede usar ese texto para mejorar sus productos, así que no escribas datos
+                            personales tuyos ni de tus clientes.{" "}
+                            <a href={POLITICA} target="_blank" rel="noopener noreferrer">Política de privacidad</a>
+                        </p>
                     </>
                 )}
 
