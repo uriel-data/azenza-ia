@@ -1,0 +1,11 @@
+# Azenza IA: SPA (Vite) + API en Netlify Functions, mismo sitio y mismo dominio.
+[build]
+  command = "npm run build && npm run check"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

@@ -1,0 +1,21 @@
+/* Base del documento. El sistema visual de la app está en azenza.css (clases ui-). */
+
+/* Urbanist variable, servida desde el propio sitio (licencia en /fonts/OFL.txt). */
+@font-face {
+    font-family: "Urbanist";
+    src: url("/fonts/urbanist-variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background: #E7E5DE;
+    font-family: "Urbanist", system-ui, sans-serif;
+}

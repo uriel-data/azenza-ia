@@ -1,0 +1,4 @@
+# SPA: cualquier ruta que no sea un archivo la resuelve React Router.
+# La API (/api/*) la atiende la función netlify/functions/api.mjs por su config.path,
+# que tiene prioridad sobre esta regla.
+/*    /index.html   200
