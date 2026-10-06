@@ -1,11 +1,20 @@
 // Router de la API. Todas las rutas /api/* entran por acá (netlify/functions/api.mjs).
 
 import { ErrorHttp, json, verificarOrigen } from "./http.js";
+import { exigirUsuario } from "./sesion.js";
+import * as cuenta from "./rutas/cuenta.js";
 
-// [método, patrón, manejador]. Los grupos del patrón llegan como parámetros.
-// Cada manejador recibe (req, { params, ip }) y devuelve un Response.
+// [método, patrón, manejador, { conCuenta }]. Los grupos del patrón llegan en params.
+// El manejador recibe (req, { params, ip, usuario }) y devuelve un Response.
+// conCuenta: exige sesión (si no, 401) y pasa el usuario.
 const RUTAS = [
     ["GET", /^\/api\/salud$/, async () => json(200, { ok: true })],
+
+    ["GET", /^\/api\/cuenta$/, cuenta.sesion],
+    ["POST", /^\/api\/cuenta\/registro$/, cuenta.registro],
+    ["POST", /^\/api\/cuenta\/entrar$/, cuenta.entrar],
+    ["POST", /^\/api\/cuenta\/salir$/, cuenta.salir],
+    ["POST", /^\/api\/cuenta\/borrar$/, cuenta.borrar],
 ];
 
 const MUTAN = new Set(["POST", "PUT", "PATCH", "DELETE"]);
@@ -16,7 +25,7 @@ export async function atender(req, { ip = "" } = {}) {
     try {
         let rutaDelPath = false;
 
-        for (const [metodo, patron, manejador] of RUTAS) {
+        for (const [metodo, patron, manejador, opciones = {}] of RUTAS) {
             const coincide = pathname.match(patron);
             if (!coincide) continue;
 
@@ -24,7 +33,17 @@ export async function atender(req, { ip = "" } = {}) {
             if (metodo !== req.method) continue;
 
             if (MUTAN.has(req.method)) verificarOrigen(req);
-            return await manejador(req, { params: coincide.slice(1), ip });
+
+            const contexto = { params: coincide.slice(1), ip };
+            let setCookie;
+
+            if (opciones.conCuenta) {
+                ({ usuario: contexto.usuario, setCookie } = await exigirUsuario(req));
+            }
+
+            const respuesta = await manejador(req, contexto);
+            if (setCookie) respuesta.headers.append("Set-Cookie", setCookie);
+            return respuesta;
         }
 
         return rutaDelPath

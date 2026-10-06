@@ -17,6 +17,7 @@ import { Modulo } from "./pages/Modulo";
 import { Consultor } from "./pages/Consultor";
 import { Login } from "./pages/Login";
 import { Registro } from "./pages/Registro";
+import { Cuenta } from "./pages/Cuenta";
 
 // Todo se puede usar sin cuenta, salvo el Consultor IA (tiene un límite diario por usuario).
 function App() {
@@ -40,6 +41,7 @@ function App() {
                             <Route path="/consultor" element={<Consultor />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/registro" element={<Registro />} />
+                            <Route path="/cuenta" element={<Cuenta />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Route>
                     </Routes>

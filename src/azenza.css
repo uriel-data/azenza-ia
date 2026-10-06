@@ -1682,3 +1682,39 @@ body:has(.app) {
     .ui-print__bar { display: none; }
     .ui-print__doc { padding: 0; }
 }
+
+/*──────CASILLA (aceptar la política)───────────────────────────*/
+
+.ui-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--ui-text-body);
+    cursor: pointer;
+}
+
+.ui-check input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--ui-teal);
+}
+
+/*──────CUENTA──────────────────────────────────────────────────*/
+
+/* Link-botón alineado a la izquierda, en una lista de acciones. */
+.ui-link-btn--start {
+    align-self: flex-start;
+    padding: 0;
+}
+
+.app a.ui-link-btn--start { justify-content: flex-start; }
+
+.ui-link-btn--danger,
+.ui-link-btn--danger:hover { color: var(--ui-error); }
+
+.ui-btn--danger { background: var(--ui-error); }
+.ui-btn--danger:hover:not(:disabled) { background: #7C2D12; }

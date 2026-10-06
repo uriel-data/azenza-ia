@@ -7,9 +7,11 @@ import { useToast } from "../context/ToastContext";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD = 8;
+const POLITICA = "https://azenza.com.ar/privacidad/#azenza-ia";
 
 export function Registro() {
     const [campos, setCampos] = useState({ nombre: "", email: "", password: "" });
+    const [acepta, setAcepta] = useState(false);
     const [errores, setErrores] = useState({});
     const [error, setError] = useState("");
     const [enviando, setEnviando] = useState(false);
@@ -36,6 +38,7 @@ export function Registro() {
         if (!campos.nombre.trim()) nuevos.nombre = "Escribí tu nombre.";
         if (!EMAIL_REGEX.test(campos.email.trim())) nuevos.email = "Revisá el email: parece que falta algo.";
         if (campos.password.length < MIN_PASSWORD) nuevos.password = `Usá al menos ${MIN_PASSWORD} caracteres.`;
+        if (!acepta) nuevos.acepta = "Para crear tu cuenta, aceptá la política de privacidad.";
 
         if (Object.keys(nuevos).length) {
             setErrores(nuevos);
@@ -49,6 +52,7 @@ export function Registro() {
                 nombre: campos.nombre.trim(),
                 email: campos.email.trim(),
                 password: campos.password,
+                aceptaPrivacidad: true,
             });
             const { importado, completo } = await vincularInvitado(user.id);
             const nombre = user.nombre.split(/\s+/)[0];
@@ -112,8 +116,30 @@ export function Registro() {
                     {campo("password", "Contraseña", { type: "password", autoComplete: "new-password", placeholder: `Al menos ${MIN_PASSWORD} caracteres` })}
                 </div>
 
+                <div className="ui-stack ui-stack--xs">
+                    <label className="ui-check" htmlFor="registro-acepta">
+                        <input
+                            id="registro-acepta"
+                            type="checkbox"
+                            checked={acepta}
+                            onChange={(e) => {
+                                setAcepta(e.target.checked);
+                                setErrores((anteriores) => ({ ...anteriores, acepta: null }));
+                            }}
+                            aria-invalid={Boolean(errores.acepta)}
+                            aria-describedby={errores.acepta ? "registro-acepta-error" : undefined}
+                        />
+                        <span>
+                            Leí y acepto la{" "}
+                            <a href={POLITICA} target="_blank" rel="noopener noreferrer">política de privacidad</a>.
+                        </span>
+                    </label>
+                    {errores.acepta && <span id="registro-acepta-error" className="ui-field__error">{errores.acepta}</span>}
+                </div>
+
                 <p className="ui-small" style={{ fontSize: 13.5, lineHeight: 1.5 }}>
-                    Guardamos los datos de tu negocio solo para que puedas seguir.
+                    Guardamos tus datos y los de tu negocio solo para que puedas seguir, según la Ley 25.326 de
+                    Protección de Datos Personales. Podés borrar tu cuenta cuando quieras.
                 </p>
             </div>
 
