@@ -41,7 +41,7 @@ npm run build && npm run preview   # http://localhost:4174 — el build con las 
 npm test             # pruebas del servidor
 npm run lint
 npm run check        # verificaciones de seguridad sobre dist/ y el código (Netlify lo corre en cada build)
-npm run db:migrate   # migraciones pendientes en DATABASE_URL (primero la rama dev de Neon)
+npm run db:migrate   # migraciones pendientes en DATABASE_URL de .env (rama dev); `-- --produccion` pide la de main
 ```
 
 Antes de cada commit: `npm run lint`, `npm test` y, si toca `src/` o `public/`, `npm run build && npm run check`.

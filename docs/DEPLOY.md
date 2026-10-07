@@ -33,17 +33,24 @@ Orden: **1) GitHub → 2) Neon → 3) Gemini → 4) Netlify (deploy de prueba) �
    - **Branches → Create branch** `dev` a partir de `main`: es la base de **desarrollo y de los deploy previews**.
 4. Copiá la connection string de cada rama (**Connect**, con el pooler activado). Es la `DATABASE_URL`.
 5. Migraciones: **siempre primero en `dev`**.
+   1. En `C:\Proyectos\azenza-ia` está el archivo `.env` (si no, copiá `.env.example` como `.env`). Abrilo y pegá la
+      connection string de la rama `dev` después de `DATABASE_URL=`, sin comillas, en una sola línea. Guardalo.
+      `.env` nunca se sube a GitHub.
+   2. En una terminal abierta en `C:\Proyectos\azenza-ia`:
+
+      ```bash
+      npm run db:migrate
+      ```
+
+      Tiene que decir `✓ 001_inicial.sql` y `✓ Listo.`
+   3. `npm run dev` y, en `http://localhost:5174`, registrate, construí un módulo, cerrá sesión y volvé a entrar:
+      ahora todo eso queda en la rama `dev` de Neon.
+
+   Cuando todo anda en `dev`, aplicalas en producción. El comando pide la connection string de `main` por pantalla
+   y no la guarda en ningún archivo:
 
    ```bash
-   # En C:\Proyectos\azenza-ia, con .env (copiado de .env.example) y DATABASE_URL = la de dev:
-   npm run db:migrate
-   npm run dev          # probá registrarte, construir un módulo, cerrar sesión y volver a entrar
-   ```
-
-   Cuando todo anda en `dev`, aplicalas en producción una vez, sin guardar esa URL en `.env`:
-
-   ```bash
-   DATABASE_URL="(connection string de main)" npm run db:migrate
+   npm run db:migrate -- --produccion
    ```
 
    Cada migración nueva (`db/migraciones/NNN_*.sql`) se aplica igual: primero `dev`, después `main`, **antes** del
@@ -71,8 +78,10 @@ se duerme sola a los 5 minutos sin uso: la primera consulta después tarda un po
 
 ## 4. Netlify: sitio nuevo y deploy de prueba
 
-1. En Netlify (la misma cuenta que la web): **Add new project → Import an existing project → GitHub →
-   `uriel-data/azenza-ia`**, rama `main`. La configuración sale de `netlify.toml`:
+1. En Netlify (la misma cuenta que la web) se crea un **proyecto nuevo**, aparte del de `azenza.com.ar`. Todo lo
+   de este paso (variables, deploys, dominio) se hace en ese proyecto nuevo, **nunca** en el de la web. Desde la
+   lista de proyectos: **Add new project → Import an existing project → GitHub → `uriel-data/azenza-ia`**, rama
+   `main`. La configuración sale de `netlify.toml`:
    - Comando: `npm run build && npm run check`.
    - Se publica `dist/`.
    - Funciones en `netlify/functions/`.
@@ -119,7 +128,8 @@ depende de dónde esté hoy el DNS de `azenza.com.ar`. Ver el paso 3 del `docs/D
 **A) El dominio ya usa Netlify DNS** (es lo previsto: NIC Argentina delega a los servidores de Netlify). Es lo más
 simple:
 
-1. En el sitio de la app: **Domain management → Add a domain → `ia.azenza.com.ar`**.
+1. **No crees registros a mano** en la zona DNS de `azenza.com.ar`. En el proyecto de la app (no en el de la web):
+   **Domain management → Add a domain → `ia.azenza.com.ar` → Verify → Add domain**.
 2. Como la zona `azenza.com.ar` está en la misma cuenta, Netlify crea solo el registro del subdominio. Confirmá en
    **Domains → azenza.com.ar → DNS records** que aparece `ia` (tipo `NETLIFY`).
 3. **HTTPS → Verify DNS configuration → Provision certificate** (Let's Encrypt, gratis). En NIC Argentina no se
